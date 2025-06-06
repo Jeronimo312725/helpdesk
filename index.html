@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login SENA</title>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="templates/css/index.css">
-    <script src="templates/js/login.js"></script>
+    <script src="templates/js/login.js" defer></script>
 </head>
 <body>
     <div class="cajita_cucho">
@@ -21,10 +23,14 @@
                     <i class="fas fa-envelope"></i>
                     <input type="email" name="correo" id="correo" placeholder="ejemplo@sena.edu.co" required>
                 </div>
+                <!-- El campo de contraseña está oculto por defecto, tu JS lo muestra cuando corresponde -->
                 <div id="campo_clave" class="campos">
-    <i class="fas fa-lock"></i>
-    <input type="password" name="clave" id="clave" placeholder="Contraseña">
-</div>
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="clave" id="clave" placeholder="Contraseña">
+                    <span id="togglePassword" class="toggle-password">
+                        <i class="fas fa-eye-slash"></i>
+                    </span>
+                </div>
                 <button type="submit" id="btn-iniciar" class="btn_iniciar">INGRESAR</button>
                 <div class="registro">
                     ¿No tiene cuenta? <a href="registro.php">Registrarse</a>
@@ -32,14 +38,14 @@
             </form>
         </div>
     </div>
-<script>
-    // Previene que el usuario vuelva a la página anterior después de cerrar sesión
-    if (window.history && window.history.pushState) {
-        window.history.pushState('', null, './');
-        window.onpopstate = function() {
-            window.location.href = './';
-        };
-    }
-</script>
+    <script>
+        // Previene que el usuario vuelva a la página anterior después de cerrar sesión
+        if (window.history && window.history.pushState) {
+            window.history.pushState('', null, './');
+            window.onpopstate = function() {
+                window.location.href = './';
+            };
+        }
+    </script>
 </body>
 </html>

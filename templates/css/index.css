@@ -1,10 +1,9 @@
-
 /* Reset general */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family:'Work Sans';
+    font-family: 'Work Sans', sans-serif;
 }
 
 body {
@@ -38,12 +37,6 @@ body {
     padding: 20px;
 }
 
-#campo_clave{
-    display: none;
-}
-/* -- */
-
-
 #imagen {
     width: 100%;
     max-width: 300px;
@@ -71,47 +64,87 @@ body {
     font-size: 24px;
 }
 
+/* Campos del formulario */
 .campos {
-    margin-bottom: 20px;
     position: relative;
+    margin-bottom: 20px;
+    transition:
+        opacity 0.4s cubic-bezier(.77,0,.18,1),
+        max-height 0.45s cubic-bezier(.77,0,.18,1),
+        margin-bottom 0.3s cubic-bezier(.77,0,.18,1),
+        transform 0.45s cubic-bezier(.77,0,.18,1);
+    opacity: 1;
+    max-height: 200px;
+    margin-bottom: 20px;
+    transform: translateX(0%);
+    overflow: hidden;
+    display: block;
 }
 
 .campos input {
     width: 100%;
-    padding: 15px 15px 15px 10px;
+    padding: 15px 44px 15px 44px;
     border: 1px solid #ddd;
     border-radius: 13px;
     outline: 0;
     font-size: 14px;
+    box-sizing: border-box;
 }
 
-.campos input:focus {
-    border-color: #39A900;
-}
-
-.campos i {
+/* Íconos de los campos (sobre y candado) */
+.campos i.fas.fa-envelope,
+.campos i.fas.fa-lock {
     position: absolute;
-    width: 20px;
-    height: 20px;
     left: 15px;
     top: 50%;
     transform: translateY(-50%);
     color: #bbb;
+    font-size: 20px;
+    pointer-events: none;
 }
 
+/* Icono de mostrar/ocultar contraseña (ojo) */
 .toggle-password {
     position: absolute;
     right: 15px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-    font-size: 24px;
+    font-size: 20px;
     color: #666;
-    z-index: 2; /* Asegurarse que esté por encima del input */
+    z-index: 2;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
-
 .toggle-password:hover {
     color: #333;
+}
+
+/* Animación de aparición/desaparición para campos */
+.campos.oculto {
+    opacity: 0;
+    max-height: 0;
+    margin-bottom: 0;
+    transform: translateX(-60px);
+    pointer-events: none;
+}
+#campo_clave {
+    opacity: 0;
+    max-height: 0;
+    margin-bottom: 0;
+    transform: translateX(60px);
+    pointer-events: none;
+    display: block;
+}
+#campo_clave.visible {
+    opacity: 1;
+    max-height: 200px;
+    margin-bottom: 20px;
+    transform: translateX(0%);
+    pointer-events: auto;
+    display: block;
 }
 
 /* Estilo para las indicaciones de la contraseña */
@@ -123,8 +156,6 @@ body {
     display: block;
     line-height: 1.4;
 }
-
-
 
 .btn_iniciar {
     width: 100%;
@@ -154,53 +185,28 @@ body {
     text-decoration: none;
 }
 
-/* Animación para mostrar el campo contraseña */
-#campo_clave {
-    display: block;
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transform: translateX(100%);
-    transition:
-        max-height 0.45s cubic-bezier(.77,0,.18,1),
-        opacity 0.35s cubic-bezier(.77,0,.18,1),
-        transform 0.45s cubic-bezier(.77,0,.18,1);
-    margin-bottom: 0;
-}
-
-#campo_clave.visible {
-    max-height: 200px;
-    opacity: 1;
-    transform: translateX(0%);
-    margin-bottom: 20px;
-}
-
+/* Responsive */
 @media (max-width: 768px) {
     .cajita_cucho {
         flex-direction: column;
         height: 100%;
     }
-
     .caja_izquierda {
         flex: none;
         order: 1;
         height: 200px;
     }
-
     #imagen {
         max-width: 150px;
     }
-
     .caja_derecha {
         flex: none;
-        order: 1;
+        order: 2;
         padding: 20px;
     }
-
     #texto {
         font-size: 20px;
     }
-
     .btn_iniciar {
         font-size: 14px;
     }
@@ -211,12 +217,10 @@ body {
         padding: 10px;
         font-size: 14px;
     }
-
     .campos input {
-        padding: 10px 10px 10px 10px;
+        padding: 10px 44px 10px 44px;
         font-size: 12px;
     }
-
     #texto {
         font-size: 18px;
     }

@@ -92,6 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $response = 'El correo electrónico ya está en uso por otro usuario';
                 $error = true;
             } else {
+                // Solo actualizar clave si es ANALISTA/DINAMIZADOR y fue digitada
                 if (!empty($clave) && in_array($cargo, ['DINAMIZADOR', 'ANALISTA'])) {
                     $clave_encriptada = md5($clave);
                     $sql = "UPDATE $tabla SET 
@@ -103,6 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         clave = '$clave_encriptada'
                         WHERE $id_campo = $id";
                 } else {
+                    // No actualizar clave, solo otros campos
                     $sql = "UPDATE $tabla SET 
                         $doc_campo = '$documento',
                         nombre = '$nombre',
@@ -170,18 +172,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $error = true;
                 } else {
                     // Registro usuario (requiere clave)
-                    $clave_hash = md5($clave);
-                    $registro = $conexion->prepare("INSERT INTO `usuarios`(`documento`, `nombre`, `correo`, `telefono`, `clave`, `cargo`) VALUES (?, ?, ?, ?, ?, ?)");
-                    $registro->bind_param("ssssss", $documento, $nombre, $correo, $telefono, $clave_hash, $cargo);
-
-                    if ($registro->execute()) {
-                        $response = 'Usuario registrado exitosamente';
-                        $registro_exitoso = true;
-                    } else {
-                        $response = 'Error al registrar el usuario: ' . $conexion->error;
+                    if (empty($clave)) {
+                        $response = 'Debe ingresar una contraseña para este tipo de usuario.';
                         $error = true;
+                    } else {
+                        $clave_hash = md5($clave);
+                        $registro = $conexion->prepare("INSERT INTO `usuarios`(`documento`, `nombre`, `correo`, `telefono`, `clave`, `cargo`) VALUES (?, ?, ?, ?, ?, ?)");
+                        $registro->bind_param("ssssss", $documento, $nombre, $correo, $telefono, $clave_hash, $cargo);
+
+                        if ($registro->execute()) {
+                            $response = 'Usuario registrado exitosamente';
+                            $registro_exitoso = true;
+                        } else {
+                            $response = 'Error al registrar el usuario: ' . $conexion->error;
+                            $error = true;
+                        }
+                        $registro->close();
                     }
-                    $registro->close();
                 }
             }
         } elseif ($es_funcionario) {
@@ -260,6 +267,7 @@ if ($esEdicion && $usuarioEditar) {
         $mostrarClave = true;
     }
 } elseif (!$esEdicion) {
+    // Mostrar campo clave solo para registro de usuario DINAMIZADOR/ANALISTA (se controla en el frontend por JS, y en el backend por validación)
     $mostrarClave = true;
 }
 
@@ -272,7 +280,7 @@ $soloFuncion = $esEdicion && in_array($valorCargo, $cargos_funcion);
 <h1><?php echo $tituloFormulario; ?></h1>
 <div class="registro-contenedor">
     <div class="carta-cuerpito">
-        <form id="formulario_registro" action="dinamizador_registro_usuarios.php<?php echo $esEdicion ? '?modo=editar&id=' . urlencode(base64_encode($usuarioEditar['id'])) . '&tipo=' . urlencode(base64_encode($tipo)) : ''; ?>" method="POST" autocomplete="off">
+        <form id="formulario_registro" action="dinamizador_registro_usuarios.php<?php echo $esEdicion ? '?modo=editar&id=' . urlencode(base64_encode($usuarioEditar['id'])) . '&tipo=' . urlencode(base64_encode($tipo)) : ''; ?>" method="POST">
             <?php if ($esEdicion): ?>
                 <input type="hidden" name="esEdicion" value="1">
                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($usuarioEditar['id']); ?>">
@@ -295,7 +303,7 @@ $soloFuncion = $esEdicion && in_array($valorCargo, $cargos_funcion);
             </div>
             <div class="filas">
                 <div class="form-group">
-                    <label for="correo">Correo Electrónico</label>
+                    <label for="correo">Correo Electrxxónico</label>
                     <input type="email" id="correo" name="correo"
                         value="<?php echo $esEdicion ? htmlspecialchars($usuarioEditar['correo']) : ''; ?>"
                         placeholder="ejemplo@correo.com" required>
@@ -326,21 +334,24 @@ $soloFuncion = $esEdicion && in_array($valorCargo, $cargos_funcion);
                         <?php endif; ?>
                     </select>
                 </div>
-                <?php if ($mostrarClave): ?>
-                <div class="form-group" for-clave>
-                    <label for="clave"><?php echo $esEdicion ? 'Nueva contraseña (dejar vacío para mantener actual)' : 'Contraseña'; ?></label>
-                    <div class="password-container">
-                        <input type="password" id="clave" name="clave"
-                            placeholder="<?php echo $esEdicion ? 'Nueva contraseña (opcional)' : 'Ingrese contraseña'; ?>"
-                            <?php echo $esEdicion ? '' : 'required'; ?>>
-                        <i class="fas fa-eye-slash toggle-password" id="togglePassword"></i>
-                    </div>
-                    <div id="password-requirements" class="password-hint">
-                        La contraseña debe tener entre 8 y 15 caracteres, incluir al menos una letra mayúscula, 
-                        una minúscula, un número y un carácter especial (@$!%?#&.).
-                    </div>
-                </div>
-                <?php endif; ?>
+        <?php if ($mostrarClave): ?>
+<div class="form-group" for-clave>
+    <label for="clave"><?php echo $esEdicion ? 'Nueva contraseña (dejar vacío para mantener actual)' : 'Contraseña'; ?></label>
+    <div class="password-container">
+        <input 
+            type="password" 
+            id="clave" 
+            name="clave"
+            placeholder="<?php echo $esEdicion ? 'Nueva contraseña (opcional)' : 'Ingrese contraseña'; ?>"
+        >
+        <i class="fas fa-eye-slash toggle-password" id="togglePassword"></i>
+    </div>
+    <div id="password-requirements" class="password-hint">
+        La contraseña debe tener entre 8 y 15 caracteres, incluir al menos una letra mayúscula, 
+        una minúscula, un número y un carácter especial (@$!%?#&.).
+    </div>
+</div>
+<?php endif; ?>
             </div>
             <div id="contenedor-boton" class="form-group">
                 <button type="submit" class="btn-registrar"><?php echo $botonTexto; ?></button>

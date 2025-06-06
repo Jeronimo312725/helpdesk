@@ -92,8 +92,8 @@ if ($cargo === 'ANALISTA' || $cargo === 'DINAMIZADOR') {
     if (!$clave_bdd) {
         enviarJson(['error' => 'No se encontró clave registrada para este usuario.']);
     }
-    // Verifica la clave (puedes usar password_verify si está hasheada)
-    if ($clave === $clave_bdd) {
+    // Verifica la clave usando md5
+    if (md5($clave) === $clave_bdd) {
         $_SESSION['sesion'] = $sesion;
         if ($cargo === 'ANALISTA') {
             enviarJson(['redirect' => 'dinamizador/dinamizador.php']);
@@ -103,6 +103,7 @@ if ($cargo === 'ANALISTA' || $cargo === 'DINAMIZADOR') {
     } else {
         enviarJson(['error' => 'Clave incorrecta.']);
     }
+
 } else if ($cargo === 'FUNCIONARIO' || $cargo === 'VIGILANTE') {
     // Se permite acceso directo a funcionarios y vigilantes (sin clave)
     $_SESSION['sesion'] = $sesion;

@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 confirmButtonText: 'Aceptar'
             });
         } else if (registro_exitoso) {
-            // Si es edición exitosa y está la variable de redirección, redirigir después del alert
             if (typeof redirigir_ver_usuarios !== "undefined" && redirigir_ver_usuarios) {
                 Swal.fire({
                     title: '¡Éxito!',
@@ -51,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Validación en tiempo real para correo institucional SENA
     const correoInput = document.getElementById('correo');
     const correoError = document.getElementById('correo-error');
-
     if (correoInput) {
         correoInput.addEventListener('input', function() {
             const correoVal = correoInput.value.trim().toLowerCase();
@@ -70,41 +68,45 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Mostrar/ocultar campo clave según cargo seleccionado (solo en registro)
+    // --- SOLUCIÓN REQUERIDA ---
+    // Mostrar/ocultar campo clave según cargo y edición/registro
     const cargoInput = document.getElementById('cargo');
     function toggleClavePorCargo() {
         const formGroupClave = document.querySelector('.form-group[for-clave]');
-        if (!cargoInput || !formGroupClave) return;
+        if (!cargoInput || !formGroupClave || !passwordInput) return;
+
+        // esEdicion es un booleano JS (true/false)
         if (cargoInput.value === "ANALISTA" || cargoInput.value === "DINAMIZADOR") {
             formGroupClave.style.display = "";
-            if (passwordInput) passwordInput.required = true;
+            if (!esEdicion) {
+                passwordInput.required = true;
+            } else {
+                passwordInput.required = false;
+            }
+            passwordInput.setCustomValidity("");
         } else {
             formGroupClave.style.display = "none";
-            if (passwordInput) {
-                passwordInput.value = "";
-                passwordInput.required = false;
-                passwordInput.setCustomValidity("");
-            }
+            passwordInput.value = "";
+            passwordInput.required = false;
+            passwordInput.setCustomValidity("");
         }
     }
     if (cargoInput) {
         cargoInput.addEventListener('change', toggleClavePorCargo);
-        // Ejecutar una vez al cargar
-        toggleClavePorCargo();
+        toggleClavePorCargo(); // Llamada inicial
     }
 
-    // Si está en edición y el usuario es FUNCIONARIO o VIGILANTE, bloquear el select de cargo para que no sea editable
+    // Si está en edición y el usuario es FUNCIONARIO o VIGILANTE, bloquear select de cargo
     if (typeof esEdicion !== "undefined" && esEdicion && (cargoInput && (cargoInput.value === "FUNCIONARIO" || cargoInput.value === "VIGILANTE"))) {
         cargoInput.addEventListener('mousedown', function(e){ e.preventDefault(); });
         cargoInput.addEventListener('keydown', function(e){ e.preventDefault(); });
         cargoInput.addEventListener('change', function(e){ this.value = cargoInput.value; });
     }
 
-    // Validaciones del formulario antes del submit
+    // Validaciones antes del submit
     const form = document.getElementById('formulario_registro');
     if (form) {
         form.addEventListener('submit', function(event) {
-            // Campos a validar
             const documento = document.getElementById('documento');
             const nombre = document.getElementById('nombre');
             const correo = document.getElementById('correo');
@@ -145,8 +147,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Validar contraseña SOLO si el campo existe, SOLO si está visible y SOLO si es requerida
-            if (clave && clave.required && clave.value.trim() !== "") {
+            // Validar contraseña SOLO si es requerida (registro de ANALISTA/DINAMIZADOR)
+            if (clave && clave.required && clave.offsetParent !== null && clave.value.trim() === "") {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Error',
+                    text: 'La contraseña es obligatoria para este tipo de usuario.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+            if (clave && clave.required && clave.offsetParent !== null && clave.value.trim() !== "") {
                 if (clave.value.length < 8 || clave.value.length > 15
                     || !/[A-Z]/.test(clave.value)
                     || !/[a-z]/.test(clave.value)
@@ -181,6 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Función para validar la contraseña en tiempo real
 function validarContrasena() {
     const passwordInput = document.getElementById('clave');
+    if (!passwordInput) return;
     const password = passwordInput.value;
     const msgElement = document.getElementById("password-requirements");
 
