@@ -1,0 +1,130 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:'Work Sans';
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+/* Sidebar / Menú lateral */
+
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+    padding: 10px;
+}
+
+.logo-container img {
+    max-width: 80%;
+}
+
+.menu-section {
+    margin-bottom: 20px;
+}
+
+.menu-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.menu-header .icon {
+    margin-right: 10px;
+}
+
+.submenu {
+    list-style: none;
+}
+
+.submenu li {
+    padding: 8px 20px 8px 40px;
+}
+
+.submenu a {
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+.submenu a:hover {
+    text-decoration: underline;
+}
+
+.logout-btn {
+    margin-top: auto;
+    text-align: center;
+    padding: 20px;
+}
+
+.logout-btn button {
+    background: none;
+    border: 2px solid white;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Contenedor principal */
+.main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 45px;
+    background-color: #929292;
+    overflow-y: auto;
+}
+
+.content-box {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+      /* ocupamos todo el espacio*/
+      width: 100%;
+      overflow-y: auto;
+}
+
+/* Cabecera del contenido */
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+/* Incluye solo los estilos del menú */
+/* Incluye solo los estilos del menú */
+.sidebar {
+    width: 220px;
+    background-color: #00304D;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+}
+#imagen {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 163px;
+    width: 163px;
+    margin-right: 20px;
+}
+/* Agrega el resto de los estilos aquí */
+/* Agrega el resto de los estilos aquí */
+

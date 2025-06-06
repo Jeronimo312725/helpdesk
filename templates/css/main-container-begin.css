@@ -1,0 +1,17 @@
+#icon-campanita{
+    font-size: 35px;
+    float: inline-start;
+  
+   
+    
+}
+#contenedor-campana{
+    display: flex;
+        justify-content: end;
+}
+
+#btn-campana{
+   border: none;
+    background-color: rgb(206, 206, 206);
+    border-radius: 40px;
+}

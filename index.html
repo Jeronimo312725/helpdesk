@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="templates/css/index.css">
+    <script src="templates/js/login.js"></script>
+</head>
+<body>
+    <div class="cajita_cucho">
+        <div class="caja_izquierda">
+            <img id="imagen" src="iconosena.png" alt="Logo">
+        </div>
+        <div class="caja_derecha">
+            <div class="logo">
+                <div id="texto">LOGIN</div>
+            </div>
+            <form action="logica_sesion.php" id="envia_formulario" method="POST">
+                <div class="campos" id="campo_correo">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="correo" id="correo" placeholder="ejemplo@sena.edu.co" required>
+                </div>
+                <div id="campo_clave" class="campos">
+    <i class="fas fa-lock"></i>
+    <input type="password" name="clave" id="clave" placeholder="Contraseña">
+</div>
+                <button type="submit" id="btn-iniciar" class="btn_iniciar">INGRESAR</button>
+                <div class="registro">
+                    ¿No tiene cuenta? <a href="registro.php">Registrarse</a>
+                </div>
+            </form>
+        </div>
+    </div>
+<script>
+    // Previene que el usuario vuelva a la página anterior después de cerrar sesión
+    if (window.history && window.history.pushState) {
+        window.history.pushState('', null, './');
+        window.onpopstate = function() {
+            window.location.href = './';
+        };
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+/* Estilos Generales */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Work Sans', sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+  
+}
+
+.registro-contenedor {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px 15px;
+    /* background-color: #fff; */
+    /* border-radius: 8px; */
+    /* box-shadow: */
+}
+.correo-error {
+    color: #ff3860;
+    font-size: 0.95em;
+    margin-top: 4px;
+    display: none;
+}
+h1 {
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #333;
+   /* Centrar el título */
+}
+
+.carta-cuerpito {
+    background-color: #fff;
+    padding: 30px;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+.filas {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap; /* Permite que las columnas se ajusten automáticamente */
+}
+
+.form-group {
+    flex: 1;
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    height: 50px; /* Ajuste para pantallas pequeñas */
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #39a900;
+    box-shadow: 0 0 3px rgba(57, 169, 0, 0.3);
+    outline: none;
+}
+
+/* Contenedor de Contraseña */
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+}
+
+#password-requirements {
+    font-size: 12px;
+    color: #ff3860;
+    margin-top: 8px;
+    padding-left: 5px;
+}
+
+/* Botón de Registro */
+#contenedor-boton {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-registrar {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    width: 70%;
+    transition: background-color 0.3s;
+    height: 50px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+.btn-registrar:hover {
+    background-color: #2d8100;
+}
+
+/* Diseño Responsive */
+@media (max-width: 1024px) {
+    .registro-contenedor {
+        max-width: 90%;
+        margin: 20px auto;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    .btn-registrar {
+        width: 80%;
+    }
+}
+
+@media (max-width: 768px) {
+    .filas {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .carta-cuerpito {
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .btn-registrar {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .registro-contenedor {
+        max-width: 100%;
+        margin: 10px;
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .carta-cuerpito {
+        padding: 15px;
+    }
+
+    .form-group input,
+    .form-group select {
+        height: 45px;
+        font-size: 14px;
+        padding: 8px 10px;
+    }
+
+    .btn-registrar {
+        font-size: 14px;
+        padding: 12px;
+        height: 45px;
+    }
+}

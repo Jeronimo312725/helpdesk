@@ -1,0 +1,333 @@
+/* Notification System Styles - Responsive */
+*{
+     font-family:'Work Sans';
+}
+/* Bell icon styles */
+#camp_noti {
+    font-size: 24px;
+    cursor: pointer;
+    position: relative;
+    color: #333;
+}
+
+/* Animation for notification bell */
+@keyframes bellShake {
+    0% { transform: rotate(0); }
+    15% { transform: rotate(5deg); }
+    30% { transform: rotate(-5deg); }
+    45% { transform: rotate(4deg); }
+    60% { transform: rotate(-4deg); }
+    75% { transform: rotate(2deg); }
+    85% { transform: rotate(-2deg); }
+    92% { transform: rotate(1deg); }
+    100% { transform: rotate(0); }
+}
+
+/* Style for bell with notifications */
+#camp_noti.has-notifications {
+    color: #ff5a5a;
+    animation: bellShake 2s ease infinite;
+}
+
+/* Notification counter badge */
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ff5a5a;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* Modal header */
+.notification-header {
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.notification-header h2 {
+    margin: 0;
+    color: #00304D;
+    font-size: 20px;
+}
+
+/* Notifications container */
+.notifications-container {
+    max-height: 630px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+/* Individual notification item - nuevo diseño */
+.notification-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background-color: #fff;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Notification item header */
+.notification-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f2f2f2;
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+}
+
+.notification-code {
+    font-weight: bold;
+    font-size: 16px;
+    color: #00304D;
+    margin-bottom: 5px; /* Espacio adicional para cuando se envuelve */
+}
+
+.notification-time {
+    color: #777;
+    font-size: 14px;
+}
+
+/* Notification body */
+.notification-item-body {
+    margin-bottom: 15px;
+}
+
+.notification-item-body div {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start; /* Cambiado de center a flex-start para mejor alineación en móviles */
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan en pantallas pequeñas */
+}
+
+.notification-label {
+    font-weight: 600;
+    width: 80px; /* Ancho fijo para las etiquetas en pantallas grandes */
+    color: #555;
+    margin-right: 10px;
+}
+
+/* Prioridad indicator - circle */
+.priority-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    flex-shrink: 0; /* Evita que el círculo se encoja */
+}
+
+.priority-indicator.alta {
+    background-color: #ff5a5a;
+}
+
+.priority-indicator.media {
+    background-color: #ffb142;
+}
+
+.priority-indicator.baja {
+    background-color: #39A900;
+}
+
+/* Prioridad text */
+.priority-text {
+    font-weight: 500;
+}
+
+/* Estado tag */
+.estado-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    margin-top: 2px; /* Espacio adicional cuando se envuelve */
+}
+#noti_caso{
+    color: #333;
+        font-size: 13px;
+}
+
+.estado-tag.abierto {
+    background-color: #39A900;
+}
+
+.estado-tag.proceso {
+    background-color: #ffb142;
+}
+
+.estado-tag.pausa {
+    background-color: #f39c12;
+}
+
+.estado-tag.solucionado {
+    background-color: #2ecc71;
+}
+
+/* Footer with action button */
+.notification-item-footer {
+    text-align: right;
+    padding-top: 10px;
+    border-top: 1px solid #f2f2f2;
+}
+
+.btn-action {
+    background-color: #00304D;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.btn-action:hover {
+    background-color: #39A900;
+}
+
+/* No notifications message */
+.empty-notifications {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+    font-style: italic;
+}
+
+/* Close button */
+.btn-close {
+    /* background-color: #eee;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+    font-size: 14px;
+    transition: background-color 0.3s; */
+    display: none;
+}
+
+.btn-close:hover {
+    background-color: #ddd;
+}
+
+/* Modal styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+        transform: translate(-50%, -73%); /* Centrado para todos los dispositivos */
+    background-color: white;
+   
+    padding: 20px;
+    border-radius: 10px;
+    max-height: 80vh;
+       width: 100%;
+    max-width: 500px;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #777;
+}
+
+.close:hover {
+    color: #333;
+}
+#saludo_content{
+    justify-items: center;
+}
+
+
+#contenedor_campanita {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+   
+}
+
+
+#contenedor_campanita div:nth-child(2) {
+    position: relative;
+    margin-right: 15px;
+}
+
+@media screen and (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        max-width: none;
+        padding: 15px;
+        transform: translate(-50%, -50%);
+    }
+    
+    .notification-item {
+        padding: 12px;
+    }
+    
+    .notification-item-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .notification-time {
+        margin-top: 5px;
+    }
+    
+    .notification-label {
+        width: 100%; /* Las etiquetas ocupan toda la anchura en pantallas pequeñas */
+        margin-bottom: 5px;
+    }
+    
+    .notification-item-body div {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .btn-action {
+        width: 100%; /* Botones a ancho completo en móviles */
+    }
+}
+
+@media screen and (max-width: 480px) {
+    #camp_noti {
+        font-size: 22px; /* Ligeramente más pequeño en móviles muy pequeños */
+    }
+    
+    .notification-header h2 {
+        font-size: 18px;
+    }
+    
+    .notifications-container {
+        max-height: 70vh; /* Limitar altura en dispositivos pequeños */
+    }
+}

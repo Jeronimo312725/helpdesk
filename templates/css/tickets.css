@@ -1,0 +1,601 @@
+/* Estilos para la página de tickets */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:'Work Sans';
+}
+.tickets-container {
+    padding: 20px;
+    width: 100%;
+    max-width: 1544px;
+    margin: 0 auto;
+}
+
+.tickets-container h1 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Filtros y búsqueda */
+.filters-container {
+    margin-bottom: 20px;
+}
+
+.search-filter {
+    margin-bottom: 15px;
+}
+
+.search-filter input {
+    width: 59vh;
+    max-width: 800px;
+    height: 45px;
+    background-color: #EEEEEE;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#saludo{
+    color: #333;
+}
+#contenedor_buscar{
+    display: flex;
+}
+
+#contenedor_campanita{
+    justify-content: space-between;
+    display: flex;
+}
+#camp_noti{
+    height: 40px;
+    width: 32px;
+}
+
+#contenedor_logo{
+    position: absolute;
+    display: block;
+    bottom: .5rem;
+    right: 1rem;
+    
+    user-select: none;
+    cursor: pointer;
+}
+
+.date-filters {
+    display: flex;
+    margin-bottom: 15px;
+    gap: 20px;
+}
+
+.date-filter {
+    display: flex;
+    align-items: center;
+}
+
+.date-filter label {
+    font-weight: bold;
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+.date-filter input[type="date"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #fff;
+}
+#primer_contenedor{
+    display: flex;
+    justify-content: space-between;
+    margin: 25px 0px -31px 0px;
+}
+#divisor{    
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Filtros de estado */
+.state-filters {
+    display: flex;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.state-filter {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #555;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.state-filter:hover {
+    color: #4CAF50;
+}
+
+.state-filter.active {
+    border-bottom: 3px solid #4CAF50;
+    color: #4CAF50;
+}
+
+/* Botón de exportar */
+.export-filter {
+    justify-items: end;
+    margin-bottom: 15px;
+}
+
+.btn-download {
+    background-color: #39A900;
+    color: #ffffff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    margin: 106px 0px -42px 0px;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-download i {
+    font-size: 16px;
+}
+
+/* Contenedor de la tabla */
+.tickets-table-container {
+    width: 100%;
+    overflow-x: auto;
+    max-height: 528px; /* Altura fija para la tabla */
+    overflow-y: auto; /* Scroll vertical cuando sea necesario */
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+/* Tabla de tickets */
+.tickets-table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+.tickets-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.tickets-table th {
+    background-color: #003366;
+    color: white;
+    text-align: left;
+    padding: 12px 15px;
+    font-weight: normal;
+}
+
+.tickets-table tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+.tickets-table td {
+    padding: 10px 15px;
+       font-size: 11px;
+}
+
+.tickets-table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Indicadores de prioridad */
+.priority-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+
+.priority-alta {
+    background-color: #FF0000;
+}
+
+.priority-media {
+    background-color: #FFA500;
+}
+
+.priority-baja {
+    background-color: #4CAF50;
+}
+
+/* Botones de acción */
+.action-btn {
+    color: #be7200;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* ESTILOS PARA CARDS EN MOBILE */
+.tickets-cards-container {
+    display: none;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 10px 5px;
+}
+
+.ticket-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.ticket-card.expanded {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    background-color: #003366;
+    color: white;
+    padding: 12px 15px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.card-header h3 {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.card-toggle {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+.card-toggle.rotated {
+    transform: rotate(180deg);
+}
+
+.card-content {
+    padding: 15px;
+}
+
+.card-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0px;
+    padding: 5px 0;
+   
+}
+
+.card-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.card-label {
+    font-weight: bold;
+    color: #555;
+    font-size: 12px;
+    flex: 0 0 40%;
+}
+
+.card-value {
+    color: #333;
+    font-size: 12px;
+    flex: 1;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.card-details {
+    display: none;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 10px;
+}
+
+.card-details.show {
+    display: block;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.card-action-btn {
+    background-color: #be7200;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.card-action-btn:hover {
+    background-color: #a86200;
+}
+
+/* Estilos para el Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #000;
+}
+
+.modal-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.select-analista {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.modal-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.btn-asignar {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+  text-transform: uppercase;
+}
+
+.btn-asignar:hover {
+  background-color: #45a049;
+}
+
+/* Estilos para Sweet Alert */
+.sweet-alert {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.sweet-alert-icon {
+  color: #ff9800;
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+
+.sweet-alert-title {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.sweet-alert-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-cancelar, .btn-confirmar {
+  padding: 8px 15px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-cancelar {
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+.btn-confirmar {
+  background-color: #f44336;
+  color: white;
+}
+.card-value-cabecera{
+      color: white;
+    font-size: 12px;
+}
+.overlay {
+  display: none;
+  position: fixed;
+  z-index: 1500;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+/* MEDIA QUERIES RESPONSIVOS */
+@media (max-width: 1200px) {
+    .tickets-container {
+        padding: 15px;
+    }
+
+    .search-filter input {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .btn-download {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}
+
+@media (max-width: 992px) {
+    .tickets-container {
+        padding: 10px;
+    }
+
+    #contenedor_buscar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .filters-container {
+        flex-wrap: wrap;
+    }
+    /* OCULTAR TABLA Y MOSTRAR CARDS EN MOBILE */
+    .tickets-table-container {
+        display: none;
+    }
+    
+    .tickets-cards-container {
+        display: block;
+    }
+
+    .tickets-table th,
+    .tickets-table td {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    #contenedor_campanita {
+        flex-direction: column;
+    }
+    
+    #primer_contenedor {
+        display: block;
+    }
+    
+    .btn-download{
+        margin: 54px 0px 0px 0px;
+    }
+    
+    .state-filters {
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+
+    .state-filter {
+        flex: 1 0 48%;
+        margin-bottom: 8px;
+    }
+
+    
+}
+
+@media (max-width: 576px) {
+    .tickets-container h1 {
+        font-size: 16px;
+        text-align: center;
+    }
+    
+    .btn-download{
+        margin: 54px 0px 0px 0px;
+    }
+
+    .date-filters {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .date-filter input[type="date"] {
+        width: 100%;
+    }
+
+    .state-filter {
+        flex: 1 0 100%;
+        padding: 6px 8px;
+        font-size: 14px;
+    }
+
+    .btn-download {
+        font-size: 10px;
+        padding: 6px 8px;
+    }
+
+    .tickets-cards-container {
+        max-height: 400px;
+        padding: 5px;
+    }
+
+    .card-header h3 {
+        font-size: 13px;
+    }
+
+    .card-label, .card-value {
+        font-size: 11px;
+    }
+}
