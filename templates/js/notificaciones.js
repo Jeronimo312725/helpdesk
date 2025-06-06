@@ -20,24 +20,21 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-    if (data.success) {
-        // Ya viene ordenado desde el backend, no necesitas volver a ordenar aquí
-        const sortedNotifications = data.notifications;
-        updateNotificationBell(sortedNotifications);
-        updateNotificationModal(sortedNotifications);
-    } else {
-        console.error('Error checking notifications:', data.message);
-    }
-})
+            if (data.success) {
+                // Ya viene ordenado desde el backend
+                const sortedNotifications = data.notifications;
+                updateNotificationBell(sortedNotifications);
+                updateNotificationModal(sortedNotifications);
+            } else {
+                console.error('Error checking notifications:', data.message);
+            }
+        });
     }
     
     // Update notification bell appearance
     function updateNotificationBell(notifications) {
         if (notifications.length > 0) {
-            // Add the notification indicator and animation
             notificationBell.classList.add('has-notifications');
-            
-            // Add notification count badge if not exists
             let badge = document.getElementById('notification-badge');
             if (!badge) {
                 badge = document.createElement('span');
@@ -47,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             badge.textContent = notifications.length;
         } else {
-            // Remove notification styles if no notifications
             notificationBell.classList.remove('has-notifications');
             const badge = document.getElementById('notification-badge');
             if (badge) {
@@ -55,37 +51,26 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-    
-  
+
     function updateNotificationModal(notifications) {
-        
         modalContent.innerHTML = '<span class="close" onclick="window.ocultarModal()">&times;</span>';
-        
-    
         const header = document.createElement('div');
         header.className = 'notification-header';
         header.innerHTML = `<h2>Notificaciones (${notifications.length})</h2>`;
         modalContent.appendChild(header);
-        
+
         if (notifications.length === 0) {
             const emptyMessage = document.createElement('div');
             emptyMessage.className = 'empty-notifications';
             emptyMessage.textContent = 'No hay notificaciones pendientes';
             modalContent.appendChild(emptyMessage);
         } else {
-          
             const notificationsContainer = document.createElement('div');
             notificationsContainer.className = 'notifications-container';
-            
-           
             notifications.forEach(notification => {
                 const notificationItem = document.createElement('div');
                 notificationItem.className = 'notification-item';
-                
-                // Format time difference for display
                 const timeDisplay = formatTimeDifference(notification.dias_transcurridos);
-                
-                // Create notification structure according to new design
                 notificationItem.innerHTML = `
                     <div class="notification-item-header">
                         <span class="notification-code">${notification.codigo_ticket}</span>
@@ -107,9 +92,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="notification-label">Estado:</span>
                             <span class="estado-tag ${getStatusClass(notification.estado)}">${notification.estado}</span>
                         </div>
-                         <div>
+                        <div>
                             <span class="notification-label">Caso:</span>
-                            <span class="estado-tag" id="noti_caso" ${getStatusClass(notification.tipo_caso)}">${notification.tipo_caso}</span>
+                            <span class="estado-tag" id="noti_caso" ${getStatusClass(notification.tipo_caso)}>${notification.tipo_caso}</span>
                         </div>
                     </div>
                     <div class="notification-item-footer">
@@ -118,13 +103,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         </button>
                     </div>
                 `;
-                
                 notificationsContainer.appendChild(notificationItem);
             });
-            
             modalContent.appendChild(notificationsContainer);
         }
-        
+
         // Add close button at the bottom
         const closeButton = document.createElement('button');
         closeButton.className = 'btn-close';
@@ -132,8 +115,8 @@ document.addEventListener('DOMContentLoaded', function() {
         closeButton.onclick = window.ocultarModal;
         modalContent.appendChild(closeButton);
     }
-    
-    // Helper function to get priority class - simplificado para el nuevo diseño
+
+    // Helper function to get priority class
     function getPriorityClass(priority) {
         switch(priority.toLowerCase()) {
             case 'alta':
@@ -146,8 +129,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 return '';
         }
     }
-    
-    // Helper function to get status class - simplificado para el nuevo diseño
+
+    // Helper function to get status class
     function getStatusClass(status) {
         switch(status.toLowerCase()) {
             case 'abierto':
@@ -162,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return '';
         }
     }
-    
+
     // Helper function to format time difference
     function formatTimeDifference(days) {
         days = parseInt(days);
@@ -176,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Función para mostrar el modal (debe estar en el ámbito global)
+// Función para mostrar el modal (ámbito global)
 function mostrarModal() {
     const modal = document.getElementById('modal');
     if (modal) {
@@ -184,7 +167,7 @@ function mostrarModal() {
     }
 }
 
-// Función para ocultar el modal (debe estar en el ámbito global)
+// Función para ocultar el modal (ámbito global)
 function ocultarModal() {
     const modal = document.getElementById('modal');
     if (modal) {
@@ -196,9 +179,8 @@ function ocultarModal() {
 window.mostrarModal = mostrarModal;
 window.ocultarModal = ocultarModal;
 
-// Asumiendo que esta función es llamada cuando se hace clic en "Atender ticket"
-// Si no existe, deberás crearla o adaptarla a tu sistema
+// Función para redirigir al historial del ticket seleccionado
 function editTicket(ticketId) {
-    // Aquí tu código para redirigir o abrir el formulario de edición
-    window.location.href = `historial_ticket.php?id=${ticketId}`;
+    // Redirige codificando el id en base64 (igual que desde la tabla)
+    window.location.href = `historial_ticket.php?id=${btoa(ticketId)}`;
 }
