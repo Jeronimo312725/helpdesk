@@ -282,5 +282,10 @@ h1{
     border-radius: 6px;
     background-color: #b1b1b1;
 }
+#atras-codigo {
+  flex-direction: column;
+    justify-content: space-between;
+   
+}
 
 }
