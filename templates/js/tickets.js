@@ -257,12 +257,11 @@ document.addEventListener('DOMContentLoaded', function() {
                      <button class="card-action-btn">
                        <ion-icon name="hand-left-outline"></ion-icon>
                        Reasignar
-                    </button>
+                        </button>
 
-                        <ion-icon name="hand-left-outline"></ion-icon>
-                        Gestionar
-                    </button>
-</div>
+
+
+                </div>
                     </div>
                 </div>
                
