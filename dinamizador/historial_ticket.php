@@ -80,9 +80,28 @@ function obtenerDatosUsuario($conexion, $documento) {
 $datos_creador = isset($ticket_data['doc_creador']) ? obtenerDatosUsuario($conexion, $ticket_data['doc_creador']) : ['nombre'=>'', 'correo'=>'', 'telefono'=>''];
 $datos_asignado = isset($ticket_data['doc_asignado']) ? obtenerDatosUsuario($conexion, $ticket_data['doc_asignado']) : ['nombre'=>'', 'correo'=>'', 'telefono'=>''];
 
+// OBTENER DATOS DE SESIÓN DEL USUARIO
+$usuario_doc = $_SESSION['sesion']['documento'] ?? '';
+$usuario_cargo = strtoupper($_SESSION['sesion']['cargo'] ?? '');
+
+// Determinar si el usuario puede comentar o cambiar estado
+$puede_modificar = true;
+if (
+    $usuario_cargo === 'ANALISTA' && 
+    $usuario_doc !== ($ticket_data['doc_asignado'] ?? '')
+) {
+    $puede_modificar = false;
+}
+
+// Bloquear intentos de publicar comentario si no tiene permiso
+if (!$puede_modificar && isset($_POST['enviar_comentario'])) {
+    header("Location: " . $_SERVER["REQUEST_URI"]);
+    exit;
+}
+
 // Publicar comentario/cambiar estado
 $comentario_exito = $comentario_errores = "";
-if (isset($_POST['enviar_comentario'])) {
+if ($puede_modificar && isset($_POST['enviar_comentario'])) {
     $comentario = trim($_POST['comentario'] ?? '');
     $nuevo_estado = trim($_POST['estado'] ?? '');
     $usuario = $_SESSION['sesion']['nombre'] ?? 'Usuario';
@@ -300,6 +319,7 @@ include_once('../templates/main-container-begin.php');
         <?php if($comentario_errores): ?>
             <div class="mensaje-error"><?php echo $comentario_errores; ?></div>
         <?php endif; ?>
+        <?php if ($puede_modificar): ?>
         <form id="form_comentario" method="POST" enctype="multipart/form-data">
             <div id="campo-texto" class="campo-form">
                 <textarea id="comentario" name="comentario" rows="4" required ></textarea>
@@ -309,23 +329,34 @@ include_once('../templates/main-container-begin.php');
             </div>
             <div id="ultimo_cont">
                 <div id="lista_estado">
-                <select name="estado" id="selector_estados">
-                    <option value="ABIERTO" <?php echo ($estado_actual == 'ABIERTO') ? 'selected' : ''; ?>>ABIERTO</option>
-                    <option value="EN PROCESO" <?php echo ($estado_actual == 'EN PROCESO') ? 'selected' : ''; ?>>EN PROCESO</option>
-                    <option value="SOLUCIONADO" <?php echo ($estado_actual == 'SOLUCIONADO') ? 'selected' : ''; ?>>SOLUCIONADO</option>
-                    <option value="EN PAUSA" <?php echo ($estado_actual == 'EN PAUSA') ? 'selected' : ''; ?>>EN PAUSA</option>
-                </select>
+                    <select name="estado" id="selector_estados">
+                        <option value="ABIERTO" <?php echo ($estado_actual == 'ABIERTO') ? 'selected' : ''; ?>>ABIERTO</option>
+                        <option value="EN PROCESO" <?php echo ($estado_actual == 'EN PROCESO') ? 'selected' : ''; ?>>EN PROCESO</option>
+                        <option value="SOLUCIONADO" <?php echo ($estado_actual == 'SOLUCIONADO') ? 'selected' : ''; ?>>SOLUCIONADO</option>
+                        <option value="EN PAUSA" <?php echo ($estado_actual == 'EN PAUSA') ? 'selected' : ''; ?>>EN PAUSA</option>
+                    </select>
                 </div>
                 <div>
                     <button id="btn-publicar" name="enviar_comentario" type="submit">PUBLICAR</button>
                 </div>
                 <div id="cont_reasignacion">
-                    <ion-icon id="manito" name="hand-left-outline"></ion-icon>
+                    <span class="action-btn" title="Reasignar ticket" onclick="reasignarTicket2(<?php echo $ticket_id; ?>);">
+                        <ion-icon id="manito" name="hand-left-outline"></ion-icon>
+                    </span>
                 </div>
             </div>
         </form>
+        <?php else: ?>
+            <div class="mensaje-info" style="margin-top: 10px;">
+                Solo puedes visualizar el historial de este ticket porque no está asignado a ti.<br>
+                Si necesitas comentar o modificar el estado, solicita la reasignación del ticket.
+            </div>
+        <?php endif; ?>
     </div>
 </div>
+
+<!-- Modal y JS para reasignación -->
+<script src="../templates/js/historial_ticket_reasignacion.js"></script>
 
 <?php
 include_once('../templates/main-container-end.php');
