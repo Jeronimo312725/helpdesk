@@ -12,6 +12,10 @@
     margin: 0 auto;
 }
 
+#icono_asig{
+color: rgb(54, 54, 248);
+margin-left: 12px;
+}
 .tickets-container h1 {
     font-size: 22px;
     font-weight: bold;
