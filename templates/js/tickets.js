@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const actionCell = `
                 <td>
                     <span class="action-btn" title="Editar ticket" onclick="editTicket2(${ticket.id_ticket}); event.stopPropagation();">
-<<<<<<< HEAD
+
                         <ion-icon name="person-add-outline"></ion-icon>
                     </span>
 
@@ -166,11 +166,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         <ion-icon name="hand-left-outline"></ion-icon>
                     </span>
 
-=======
+
                         <ion-icon name="hand-left-outline"></ion-icon>
                     </span>
->>>>>>> cacea7b5fd1626fa8a5cc2afd2d173c2885702e5
-                </td>
+ </td>
             `;
 
             row.innerHTML = cells.join('') + actionCell;
@@ -251,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                          <div class="card-actions">
                     <button class="card-action-btn" onclick="editTicket2(${ticket.id_ticket})">
-<<<<<<< HEAD
+
                       <ion-icon name="person-add-outline"></ion-icon>
                         Gestionar
                     </button>
@@ -259,12 +258,11 @@ document.addEventListener('DOMContentLoaded', function() {
                        <ion-icon name="hand-left-outline"></ion-icon>
                        Reasignar
                     </button>
-=======
+
                         <ion-icon name="hand-left-outline"></ion-icon>
                         Gestionar
                     </button>
->>>>>>> cacea7b5fd1626fa8a5cc2afd2d173c2885702e5
-                </div>
+</div>
                     </div>
                 </div>
                
