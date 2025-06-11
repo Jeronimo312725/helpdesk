@@ -484,6 +484,20 @@
   height: 100%;
   background-color: rgba(0,0,0,0.5);
 }
+.action-btn.disabled {
+    color: #bdbdbd !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
+    opacity: 0.6;
+}
+.card-action-btn[disabled] {
+    background: #eee !important;
+    color: #bdbdbd !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
 
 /* MEDIA QUERIES RESPONSIVOS */
 @media (max-width: 1200px) {
@@ -584,9 +598,17 @@
     .btn-download {
         font-size: 10px;
         padding: 6px 8px;
+
                 height: 36px;
     
     }
+
+.action-btn.disabled,
+.card-action-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
 
     .tickets-cards-container {
         max-height: 400px;

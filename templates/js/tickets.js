@@ -6,89 +6,89 @@ document.addEventListener('DOMContentLoaded', function() {
     const stateFilters = document.querySelectorAll('.state-filter');
     const ticketsTable = document.getElementById('ticketsTable');
     const downloadBtn = document.getElementById('downloadBtn');
-    
+
     // Estado actual del filtro
     let currentFilter = 'ABIERTOS';
     let currentTickets = []; // Almacenar tickets actuales
-    
+
     // Activar el filtro "ABIERTOS" por defecto
     document.querySelector('.state-filter[data-state="ABIERTOS"]').classList.add('active');
-    
+
     // Cargar tickets iniciales con el filtro por defecto
     loadTickets();
-    
+
     // Event listeners
-    
+
     // Búsqueda en tiempo real
     if (searchInput) {
         searchInput.addEventListener('input', function() {
             loadTickets();
         });
     }
-    
+
     // Filtro por fechas
     if (dateFromInput) {
         dateFromInput.addEventListener('change', function() {
             loadTickets();
         });
     }
-    
+
     if (dateToInput) {
         dateToInput.addEventListener('change', function() {
             loadTickets();
         });
     }
-    
+
     // Filtros de estado
     stateFilters.forEach(filter => {
         filter.addEventListener('click', function() {
             // Quitar clase activa de todos los filtros
             stateFilters.forEach(f => f.classList.remove('active'));
-            
+
             // Añadir clase activa al filtro seleccionado
             this.classList.add('active');
-            
+
             // Actualizar filtro actual
             currentFilter = this.getAttribute('data-state');
-            
+
             // Cargar tickets con el nuevo filtro
             loadTickets();
         });
     });
-    
+
     // Botón de descarga
     if (downloadBtn) {
         downloadBtn.addEventListener('click', function() {
             exportToCSV();
         });
     }
-    
+
     // Función para cargar tickets
     function loadTickets() {
         const searchTerm = searchInput ? searchInput.value : '';
         const dateFrom = dateFromInput ? dateFromInput.value : '';
         const dateTo = dateToInput ? dateToInput.value : '';
-        
+
         // Mostrar indicador de carga
         if (ticketsTable) {
             const tbody = ticketsTable.querySelector('tbody');
             tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Cargando tickets...</td></tr>';
         }
-        
+
         // Crear objeto FormData para enviar los datos
         const formData = new FormData();
         formData.append('action', 'getTickets');
         formData.append('estado', getEstadoValue(currentFilter));
         formData.append('search', searchTerm);
-        
+
         if (dateFrom) {
             formData.append('fecha_desde', dateFrom);
         }
-        
+
         if (dateTo) {
             formData.append('fecha_hasta', dateTo);
         }
-        
+
         // Realizar petición AJAX al mismo archivo
         fetch('dinamizador.php', {
             method: 'POST',
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // Función para renderizar tickets en la tabla
     function renderTickets(tickets) {
         if (!ticketsTable) return;
@@ -153,22 +153,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 `<td class="clickable-cell">${formatDateTime(ticket.fecha_actualizacion)}</td>`
             ];
 
+            // Lógica botones de acción
+            const isAssigned = !!ticket.usuario_atencion && ticket.usuario_atencion !== '-' && ticket.usuario_atencion !== 'Sin asignar';
+            const cargo = (window.usuarioCargo || '').toUpperCase();
+            const isAnalista = cargo === 'ANALISTA';
+            const isDinamizador = cargo === 'DINAMIZADOR';
+            const isAssignedToMe = isAnalista && window.usuarioNombre && (ticket.usuario_atencion === window.usuarioNombre);
+
+            // Botón persona
+            let assignBtnClass = 'action-btn';
+            let assignBtnStyle = '';
+            let assignBtnDisabled = '';
+            let assignBtnTitle = 'Asignar ticket';
+            if (isAssigned) {
+                assignBtnClass += ' disabled';
+                assignBtnStyle = 'color: #bdbdbd; cursor: not-allowed;';
+                assignBtnDisabled = 'tabindex="-1"';
+                assignBtnTitle = 'Ya asignado';
+            }
+
+            // Botón mano (reasignar)
+            let handBtnHtml = '';
+            if (isAssigned && (isDinamizador || isAssignedToMe)) {
+                handBtnHtml = `
+                  <span class="action-btn" title="Reasignar ticket" onclick="reasignarTicket2(${ticket.id_ticket}); event.stopPropagation();">
+                    <ion-icon name="hand-left-outline"></ion-icon>
+                  </span>
+                `;
+            }
+
             // Celda de acciones (¡NO clickeable!)
             const actionCell = `
                 <td>
-                    <span class="action-btn" title="Editar ticket" onclick="editTicket2(${ticket.id_ticket}); event.stopPropagation();">
-
+                    <span 
+                        class="${assignBtnClass}" 
+                        style="${assignBtnStyle}" 
+                        ${assignBtnDisabled} 
+                        title="${assignBtnTitle}"
+                        ${!isAssigned ? `onclick="editTicket2(${ticket.id_ticket}); event.stopPropagation();"` : ''}
+                    >
                         <ion-icon name="person-add-outline"></ion-icon>
                     </span>
-
-
-                    <span class="action-btn" title=""">
-                        <ion-icon name="hand-left-outline"></ion-icon>
-                    </span>
-
-
-                       
-
+                    ${handBtnHtml}
                 </td>
             `;
 
@@ -178,16 +204,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const clickableCells = row.querySelectorAll('.clickable-cell');
             clickableCells.forEach(cell => {
                 cell.style.cursor = "pointer";
-               cell.addEventListener('click', function(e) {
-    const encodedId = btoa(ticket.id_ticket.toString());
-    window.location.href = `historial_ticket.php?id=${encodedId}`;
-});
+                cell.addEventListener('click', function(e) {
+                    const encodedId = btoa(ticket.id_ticket.toString());
+                    window.location.href = `historial_ticket.php?id=${encodedId}`;
+                });
             });
 
             tbody.appendChild(row);
         });
     }
-    
+
     // Función para renderizar cards en dispositivos móviles
     function renderCards(tickets) {
         // Crear contenedor de cards si no existe
@@ -195,42 +221,60 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!cardsContainer) {
             cardsContainer = document.createElement('div');
             cardsContainer.className = 'tickets-cards-container';
-            
+
             // Insertar después del contenedor de la tabla
             const tableContainer = document.querySelector('.tickets-table-container');
             if (tableContainer) {
                 tableContainer.parentNode.insertBefore(cardsContainer, tableContainer.nextSibling);
             }
         }
-        
+
         // Limpiar contenedor
         cardsContainer.innerHTML = '';
-        
+
         if (tickets.length === 0) {
             cardsContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">No se encontraron tickets.</div>';
             return;
         }
-        
+
         tickets.forEach(ticket => {
             const priorityClass = `priority-${ticket.prioridad.toLowerCase()}`;
-            
+            const isAssigned = !!ticket.usuario_atencion && ticket.usuario_atencion !== '-' && ticket.usuario_atencion !== 'Sin asignar';
+            const cargo = (window.usuarioCargo || '').toUpperCase();
+            const isAnalista = cargo === 'ANALISTA';
+            const isDinamizador = cargo === 'DINAMIZADOR';
+            const isAssignedToMe = isAnalista && window.usuarioNombre && (ticket.usuario_atencion === window.usuarioNombre);
+
+            // Botón persona (gestionar)
+            let assignBtnDisabled = isAssigned ? 'disabled' : '';
+            let assignBtnStyle = isAssigned ? 'background: #eee; color: #bdbdbd; cursor: not-allowed;' : '';
+            let assignBtnOnclick = !isAssigned ? `onclick="editTicket2(${ticket.id_ticket})"` : '';
+
+            // Botón mano (reasignar)
+            let handBtnHtml = '';
+            if (isAssigned && (isDinamizador || isAssignedToMe)) {
+                handBtnHtml = `
+                  <button class="card-action-btn" onclick="reasignarTicket2(${ticket.id_ticket})">
+                    <ion-icon name="hand-left-outline"></ion-icon>
+                    Reasignar
+                  </button>
+                `;
+            }
+
             const card = document.createElement('div');
             card.className = 'ticket-card';
             card.innerHTML = `
                 <div class="card-header" onclick="toggleCard(this)">
                     <h3>${ticket.codigo_ticket}</h3>
-                    <span class="card-value-cabecera">${ticket.ubicacion}
-                        </span>
+                    <span class="card-value-cabecera">${ticket.ubicacion}</span>
                     <span class="card-toggle"><ion-icon name="chevron-down-outline"></ion-icon></span>
                 </div>
                 <div class="card-content">
-                    
                     <div class="card-row">
                         <span class="card-label">Tipo de Caso:</span>
-                       ${ticket.tipo_caso}
-                            <span class="priority-indicator ${priorityClass}"></span>
+                        ${ticket.tipo_caso}
+                        <span class="priority-indicator ${priorityClass}"></span>
                     </div>
-                    
                     <div class="card-details">
                         <div class="card-row">
                             <span class="card-label">Creado Por:</span>
@@ -248,38 +292,30 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="card-label">Fecha Actualización:</span>
                             <span class="card-value">${formatDateTime(ticket.fecha_actualizacion)}</span>
                         </div>
-                         <div class="card-actions">
-                    <button class="card-action-btn" onclick="editTicket2(${ticket.id_ticket})">
-
-                      <ion-icon name="person-add-outline"></ion-icon>
-                        Gestionar
-                    </button>
-                     <button class="card-action-btn">
-                       <ion-icon name="hand-left-outline"></ion-icon>
-                       Reasignar
-                        </button>
-
-
-
-                </div>
+                        <div class="card-actions">
+                            <button class="card-action-btn" style="${assignBtnStyle}" ${assignBtnDisabled} ${assignBtnOnclick}>
+                                <ion-icon name="person-add-outline"></ion-icon>
+                                Gestionar
+                            </button>
+                            ${handBtnHtml}
+                        </div>
                     </div>
                 </div>
-               
             `;
-            
+
             // Agregar click para ir al historial (excepto en botones)
-           card.addEventListener('click', function(e) {
-    if (e.target.closest('.card-action-btn') || e.target.closest('.card-header')) {
-        return;
-    }
-    const encodedId = btoa(ticket.id_ticket.toString());
-    window.location.href = `historial_ticket.php?id=${encodedId}`;
-});
-            
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('.card-action-btn') || e.target.closest('.card-header')) {
+                    return;
+                }
+                const encodedId = btoa(ticket.id_ticket.toString());
+                window.location.href = `historial_ticket.php?id=${encodedId}`;
+            });
+
             cardsContainer.appendChild(card);
         });
     }
-    
+
     // Función para exportar a CSV
     function exportToCSV() {
         // Redirigir directamente para descargar el archivo
@@ -287,42 +323,41 @@ document.addEventListener('DOMContentLoaded', function() {
         form.method = 'POST';
         form.action = 'dinamizador.php';  // El mismo archivo
         form.style.display = 'none';
-        
+
         const actionInput = document.createElement('input');
         actionInput.type = 'hidden';
         actionInput.name = 'action';
         actionInput.value = 'exportTickets';
-        
+
         form.appendChild(actionInput);
         document.body.appendChild(form);
         form.submit();
-        
+
         // Eliminar el formulario después de enviarlo
         setTimeout(() => {
             document.body.removeChild(form);
         }, 1000);
     }
-    
+
     // Función auxiliar para convertir estado visual a valor de BD
     function getEstadoValue(filterName) {
-    const estadoMap = {
-        'ABIERTOS': 'Abierto',
-        'EN PROCESO': 'En proceso',
-        'SOLUCIONADOS': 'Solucionado',
-        'EN PAUSA': 'En pausa'
-    };
-    return estadoMap[filterName] || 'Abierto';
-}
+        const estadoMap = {
+            'ABIERTOS': 'Abierto',
+            'EN PROCESO': 'En proceso',
+            'SOLUCIONADOS': 'Solucionado',
+            'EN PAUSA': 'En pausa'
+        };
+        return estadoMap[filterName] || 'Abierto';
+    }
 
-    
     // Función para formatear fechas con hora completa
     function formatDateTime(dateString) {
         if (!dateString) return '-';
-        
+
         const date = new Date(dateString);
         // Verificar si la fecha es válida
         if (isNaN(date.getTime())) return dateString;
-        
+
         // Formatear fecha y hora completa: DD/MM/YYYY HH:MM:SS
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -330,18 +365,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
         const seconds = String(date.getSeconds()).padStart(2, '0');
-        
+
         return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
     }
-    
+
     // Mantener la función original formatDate por si se necesita en otro lugar
     function formatDate(dateString) {
         if (!dateString) return '-';
-        
+
         const date = new Date(dateString);
         // Verificar si la fecha es válida
         if (isNaN(date.getTime())) return dateString;
-        
+
         return date.toLocaleDateString('es-ES');
     }
 });
@@ -351,7 +386,7 @@ function toggleCard(headerElement) {
     const card = headerElement.closest('.ticket-card');
     const details = card.querySelector('.card-details');
     const toggle = headerElement.querySelector('.card-toggle');
-    
+
     if (details.classList.contains('show')) {
         details.classList.remove('show');
         toggle.classList.remove('rotated');
@@ -363,9 +398,43 @@ function toggleCard(headerElement) {
     }
 }
 
-// Función global para editar un ticket
+// Función global para editar un ticket (ASIGNAR)
 function editTicket(ticketId) {
     // Redirigir a la página de edición
     window.location.href = `../../analista/analista.php?id=${ticketId}`;
+}
+
+// Función global para reasignar un ticket (abre modal de asignación)
+function reasignarTicket2(ticketId) {
+    // Esta función debe estar definida en asignacion_analistas.js, pero aquí se llama para abrir la modal de reasignación.
+    // Simplemente llama a editTicket2 pero fuerza la apertura de la modal.
+    if (typeof editTicket2 === 'function') {
+        // Llama a editTicket2 en modo reasignación
+        editTicket2(ticketId, true); // true = modo reasignación
+        // Cambia el título de la modal a 'REASIGNACIÓN DE TICKET'
+        setTimeout(function() {
+            var modalTitle = document.querySelector('#asignacionModal h2');
+            if (modalTitle) {
+                modalTitle.textContent = 'REASIGNACIÓN DE TICKET';
+            }
+        }, 50);
+    } else {
+        // Fallback: intenta abrir la modal como dinamizador
+        if (typeof createAsignacionModal === 'function' && typeof cargarAnalistas === 'function') {
+            createAsignacionModal();
+            cargarAnalistas();
+            asignacionModal.style.display = 'block';
+            window.currentTicketId = ticketId;
+            // Cambia el título de la modal a 'REASIGNACIÓN DE TICKET'
+            setTimeout(function() {
+                var modalTitle = document.querySelector('#asignacionModal h2');
+                if (modalTitle) {
+                    modalTitle.textContent = 'REASIGNACIÓN DE TICKET';
+                }
+            }, 50);
+        } else {
+            alert('Funcionalidad de reasignación no disponible.');
+        }
+    }
 }
 
