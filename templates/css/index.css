@@ -218,8 +218,9 @@ body {
         font-size: 14px;
     }
     .campos input {
+               height: 50px;
         padding: 10px 44px 10px 44px;
-        font-size: 12px;
+        font-size: 14px;
     }
     #texto {
         font-size: 18px;
