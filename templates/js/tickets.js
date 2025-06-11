@@ -167,9 +167,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     </span>
 
 
-                        <ion-icon name="hand-left-outline"></ion-icon>
-                    </span>
- </td>
+                       
+
+                </td>
             `;
 
             row.innerHTML = cells.join('') + actionCell;
